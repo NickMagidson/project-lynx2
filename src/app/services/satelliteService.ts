@@ -7,7 +7,13 @@ import {
 import { loadTLEData } from "../utils/tleParser";
 
 async function getSatellitePositions(
-  performanceMode: "low" | "medium" | "high" = "medium"
+  performanceMode:
+    | "low"
+    | "medium"
+    | "high"
+    | "ultra"
+    | "extreme"
+    | "unlimited" = "ultra"
 ): Promise<SatellitePosition[]> {
   try {
     // Load TLE data from the actual file
@@ -16,7 +22,7 @@ async function getSatellitePositions(
 
     // Limit satellites based on performance mode
     const maxSatellites = getMaxSatellites(performanceMode);
-    const limitedTleData = tleData.slice(0, maxSatellites);
+    const limitedTleData = tleData.slice(0, 200000); // Sat limit manually changes here
     console.log(
       `Processing ${limitedTleData.length} satellites for rendering (performance mode: ${performanceMode})`
     );
@@ -32,7 +38,13 @@ async function getSatellitePositions(
 
 async function getSatellitePositionsAtSpecificTime(
   date: Date,
-  performanceMode: "low" | "medium" | "high" = "medium"
+  performanceMode:
+    | "low"
+    | "medium"
+    | "high"
+    | "ultra"
+    | "extreme"
+    | "unlimited" = "ultra"
 ): Promise<SatellitePosition[]> {
   try {
     // Load TLE data from the actual file

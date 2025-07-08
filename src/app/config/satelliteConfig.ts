@@ -20,8 +20,8 @@ export const SATELLITE_CONFIG = {
   // Visual settings
   VISUAL: {
     // Point sizes
-    POINT_SIZE: 2,
-    OUTLINE_WIDTH: 1,
+    POINT_SIZE: 1,
+    // OUTLINE_WIDTH: 1,
 
     // Colors for different satellite types
     COLORS: {
@@ -59,7 +59,13 @@ export const SATELLITE_CONFIG = {
  * Get the maximum number of satellites to render based on performance mode
  */
 export function getMaxSatellites(
-  performanceMode: "low" | "medium" | "high" = "medium"
+  performanceMode:
+    | "low"
+    | "medium"
+    | "high"
+    | "ultra"
+    | "extreme"
+    | "unlimited" = "ultra"
 ): number {
   switch (performanceMode) {
     case "low":
@@ -68,6 +74,12 @@ export function getMaxSatellites(
       return 5000; // Good balance
     case "high":
       return 10000; // For powerful devices
+    case "ultra":
+      return 20000; // For very high-end devices (experimental)
+    case "extreme":
+      return 50000; // For workstation-class hardware
+    case "unlimited":
+      return Number.MAX_SAFE_INTEGER; // Render every single satellite (may cause performance issues)
     default:
       return SATELLITE_CONFIG.MAX_SATELLITES;
   }
