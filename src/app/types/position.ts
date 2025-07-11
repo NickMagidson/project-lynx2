@@ -14,4 +14,17 @@ export type SatellitePosition = {
     y: number;
     z: number;
   };
+  orbitalElements?: {
+    inclination: number;
+    rightAscension: number;
+    eccentricity: number;
+    argumentOfPeriapsis: number;
+    meanAnomaly: number;
+    meanMotion: number;
+    period: number;
+    apogee: number;
+    perigee: number;
+    catalogNumber: string;
+    epoch: string;
+  };
 };

@@ -6,6 +6,7 @@ import { SATELLITE_CONFIG, getSatelliteColor } from "../config/satelliteConfig";
 import { dateToJulianDate } from "../example_utils/date";
 import type { CesiumType } from "../types/cesium";
 import type { Position, SatellitePosition } from "../types/position";
+import { generateSatelliteDescription } from "../utils/satelliteDescription";
 //NOTE: This is required to get the stylings for default Cesium UI and controls
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
@@ -79,8 +80,8 @@ export const CesiumComponent: React.FunctionComponent<{
         const color = (CesiumJs.Color as any)[colorName] || CesiumJs.Color.CYAN;
 
         cesiumViewer.current?.entities.add({
-          //   id: `satellite-${index}`,
           name: satellite.name,
+          description: generateSatelliteDescription(satellite),
           position: CesiumJs.Cartesian3.fromDegrees(
             satellite.lng,
             satellite.lat,
@@ -123,6 +124,7 @@ export const CesiumComponent: React.FunctionComponent<{
         const selectedEntity = cesiumViewer.current?.selectedEntity;
         if (selectedEntity && selectedEntity.name) {
           console.log(`Selected satellite: ${selectedEntity.name}`);
+
           // Show label for selected satellite
           if (selectedEntity.label) {
             selectedEntity.label.show = new CesiumJs.ConstantProperty(true);
