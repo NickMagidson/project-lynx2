@@ -2,18 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Cesium in Next.js 14 with TypeScript",
-  description: "An example Next.js 14 TypeScript project displaying Cesium hosted in Vercel",
+  title: "Project Lynx 2.0",
+  description: "A satellite tracking application using Next.js 14 and Cesium",
   openGraph: {
     type: "website",
-    siteName: "Cesium in Next.js 14 with TypeScript",
-    title: "Cesium in Next.js 14 with TypeScript",
-    url: `https://nextjs-cesium.vercel.app`,
-    description: "An example Next.js 14 TypeScript project displaying Cesium hosted in Vercel",
-    images: [{
-      url: `https://nextjs-cesium.vercel.app/og.png`
-    }]
-  }
+    siteName: "Project Lynx 2.0",
+    title: "Project Lynx 2.0",
+    description: "A satellite tracking application using Next.js 14 and Cesium",
+  },
 };
 
 export default function RootLayout({

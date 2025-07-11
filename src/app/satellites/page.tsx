@@ -1,7 +1,7 @@
 import { getSatellitePositions } from "../services/satelliteService";
 
 export default async function SatellitesPage() {
-  const satellitePositions = await getSatellitePositions();
+  const satellitePositions = await getSatellitePositions("low");
 
   return (
     <div style={{ padding: "20px", fontFamily: "monospace" }}>

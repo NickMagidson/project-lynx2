@@ -90,7 +90,7 @@ export const CesiumComponent: React.FunctionComponent<{
             pixelSize: SATELLITE_CONFIG.VISUAL.POINT_SIZE,
             color: color,
             outlineColor: CesiumJs.Color.BLACK,
-            outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
+            // outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
             heightReference: CesiumJs.HeightReference.NONE,
             scaleByDistance: SATELLITE_CONFIG.PERFORMANCE.USE_DISTANCE_SCALING
               ? new CesiumJs.NearFarScalar(1.5e6, 3.0, 1.5e8, 0.3)
@@ -100,7 +100,7 @@ export const CesiumComponent: React.FunctionComponent<{
             text: satellite.name,
             font: SATELLITE_CONFIG.VISUAL.LABEL.FONT,
             style: CesiumJs.LabelStyle.FILL_AND_OUTLINE,
-            outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
+            // outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
             verticalOrigin: CesiumJs.VerticalOrigin.BOTTOM,
             pixelOffset: new CesiumJs.Cartesian2(
               0,
