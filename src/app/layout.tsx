@@ -10,9 +10,9 @@ export const metadata: Metadata = {
     title: "Project Lynx 2.0",
     description: "A satellite tracking application using Next.js 14 and Cesium",
   },
-  // icons: {
-  //   icon: "/icons8-satellite-96.png",
-  // },
+  icons: {
+    icon: "/icons8-satellite-96.png",
+  },
 };
 
 export default function RootLayout({
@@ -22,11 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <head>
+      <head>
         <link rel="icon" href="/icons8-satellite-96.png" sizes="any" />
         <link rel="icon" href="/icons8-satellite-96.png" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </head> */}
+      </head>
       <body>{children}</body>
     </html>
   );

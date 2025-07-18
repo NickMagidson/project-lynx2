@@ -124,6 +124,50 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.125);
 } */
 
+/* Loading Screen Animations */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Utility classes for smooth transitions */
+.loading-transition {
+  transition: all 0.3s ease-in-out;
+}
+
 /* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
