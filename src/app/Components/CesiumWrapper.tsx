@@ -15,16 +15,18 @@ export const CesiumWrapper: React.FunctionComponent<{
   satellites?: SatellitePosition[];
 }> = ({ positions = [], satellites = [] }) => {
   const [CesiumJs, setCesiumJs] = React.useState<CesiumType | null>(null);
-  const [loadingStage, setLoadingStage] = React.useState("Initializing Cesium...");
+  const [loadingStage, setLoadingStage] = React.useState(
+    "Initializing Cesium..."
+  );
   const [isGlobeReady, setIsGlobeReady] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {
     if (CesiumJs !== null) return;
-    
+
     setLoadingStage("Loading Cesium Engine...");
     setProgress(20);
-    
+
     const CesiumImportPromise = import("cesium");
     Promise.all([CesiumImportPromise]).then((promiseResults) => {
       const { ...Cesium } = promiseResults[0];
@@ -38,7 +40,7 @@ export const CesiumWrapper: React.FunctionComponent<{
     setIsGlobeReady(true);
     setLoadingStage("Application Ready");
     setProgress(100);
-    
+
     // Hide loading screen after a brief delay
     setTimeout(() => {
       setLoadingStage("");

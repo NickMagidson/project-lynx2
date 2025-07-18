@@ -21,7 +21,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         left: 0,
         width: "100vw",
         height: "100vh",
-        background: "linear-gradient(135deg, #0c1445 0%, #1a1a2e 50%, #16213e 100%)",
+        background:
+          "linear-gradient(135deg, #0c1445 0%, #1a1a2e 50%, #16213e 100%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -54,7 +55,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           🛰️
         </div>
-        
+
         {/* Orbit Animation */}
         <div
           style={{

@@ -17,13 +17,13 @@ export const CesiumComponent: React.FunctionComponent<{
   onGlobeReady?: () => void;
   onLoadingStageChange?: (stage: string) => void;
   onProgressChange?: (progress: number) => void;
-}> = ({ 
-  CesiumJs, 
-  positions = [], 
-  satellites = [], 
+}> = ({
+  CesiumJs,
+  positions = [],
+  satellites = [],
   onGlobeReady,
   onLoadingStageChange,
-  onProgressChange 
+  onProgressChange,
 }) => {
   const cesiumViewer = React.useRef<Viewer | null>(null);
   const cesiumContainerRef = React.useRef<HTMLDivElement>(null);
@@ -108,7 +108,8 @@ export const CesiumComponent: React.FunctionComponent<{
 
           // Get color based on satellite type (constellation/purpose)
           const colorName = getSatelliteColor(satellite.name);
-          const color = (CesiumJs.Color as any)[colorName] || CesiumJs.Color.CYAN;
+          const color =
+            (CesiumJs.Color as any)[colorName] || CesiumJs.Color.CYAN;
 
           cesiumViewer.current?.entities.add({
             name: satellite.name,
@@ -173,13 +174,19 @@ export const CesiumComponent: React.FunctionComponent<{
         setTimeout(() => {
           onGlobeReady?.();
         }, 100);
-
       } catch (error) {
         console.error("Error initializing Cesium:", error);
         onLoadingStageChange?.("Error loading 3D globe");
       }
     }
-  }, [satellites, CesiumJs, cleanUpPrimitives, onLoadingStageChange, onProgressChange, onGlobeReady]);
+  }, [
+    satellites,
+    CesiumJs,
+    cleanUpPrimitives,
+    onLoadingStageChange,
+    onProgressChange,
+    onGlobeReady,
+  ]);
 
   React.useEffect(() => {
     if (cesiumViewer.current === null && cesiumContainerRef.current) {
