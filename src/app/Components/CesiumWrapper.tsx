@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 import type { CesiumType } from "../types/cesium";
 import type { Position, SatellitePosition } from "../types/position";
+import AboutModal from "./AboutModal";
 import LoadingScreen from "./LoadingScreen";
 
 const CesiumDynamicComponent = dynamic(() => import("./CesiumComponent"), {
@@ -75,6 +76,7 @@ export const CesiumWrapper: React.FunctionComponent<{
           onProgressChange={setProgress}
         />
       )}
+      <AboutModal />
     </>
   );
 };
