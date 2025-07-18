@@ -203,9 +203,6 @@ export function generateSatelliteDescription(
           : ""
       }
 
-      <div style="font-size: 11px; color: #888; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #555;">
-        Real-time satellite tracking via TLE data
-      </div>
     </div>
   `;
 }

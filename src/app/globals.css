@@ -100,6 +100,18 @@ a {
   text-decoration: none;
 }
 
+.cesium-widget-credits{
+  display:none !important;
+}
+
+.cesium-sceneModePicker-wrapper,
+.cesium-viewer-geocoderContainer,
+.cesium-viewer-animationContainer,
+.cesium-viewer-timelineContainer,
+.cesium-viewer-toolbar > button:nth-child(4) {
+  display: none !important;
+}
+
 /* .cesium-infoBox {
   height: auto;
   max-width: 23rem;

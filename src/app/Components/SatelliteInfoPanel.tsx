@@ -259,7 +259,6 @@ export const SatelliteInfoPanel: React.FC<SatelliteInfoPanelProps> = ({
           borderTop: "1px solid rgba(255, 255, 255, 0.125)",
         }}
       >
-        <div>Real-time satellite tracking via TLE data</div>
         <div style={{ marginTop: "5px", fontSize: "11px" }}>
           Click anywhere on the globe to deselect
         </div>
