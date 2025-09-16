@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@carbon/react": "^1.91.0",
+    "@carbon/styles": "^1.90.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.2.0",
