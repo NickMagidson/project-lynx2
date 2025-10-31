@@ -13,7 +13,7 @@ const flexRow = {
 const buttonStyle = {
   position: "fixed",
   top: "20px",
-  left: "20px",
+  left: "320px", // Position to the right of the filter panel (which is ~280px wide + some margin)
   color: "white",
   padding: "8px 20px",
   background: "rgba(255, 255, 255, 0.35)",
