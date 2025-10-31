@@ -28,6 +28,8 @@ export const CesiumComponent: React.FunctionComponent<{
   const cesiumViewer = React.useRef<Viewer | null>(null);
   const cesiumContainerRef = React.useRef<HTMLDivElement>(null);
   const addedScenePrimitives = React.useRef<Cesium3DTileset[]>([]);
+  const satelliteEntities = React.useRef<Map<string, any>>(new Map());
+  const previouslySelectedEntity = React.useRef<any>(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
 
   const resetCamera = React.useCallback(async () => {
@@ -56,6 +58,78 @@ export const CesiumComponent: React.FunctionComponent<{
     });
     addedScenePrimitives.current = [];
   }, []);
+
+  const updateSatellites = React.useCallback((newSatellites: SatellitePosition[]) => {
+    if (!cesiumViewer.current) return;
+
+    // Remove satellites that are no longer in the new list
+    const newSatelliteNames = new Set(newSatellites.map(sat => sat.name));
+    satelliteEntities.current.forEach((entity, name) => {
+      if (!newSatelliteNames.has(name)) {
+        cesiumViewer.current?.entities.remove(entity);
+        satelliteEntities.current.delete(name);
+      }
+    });
+
+    // Add or update satellites
+    newSatellites.forEach((satellite) => {
+      const existingEntity = satelliteEntities.current.get(satellite.name);
+      
+      if (existingEntity) {
+        // Update existing satellite position
+        existingEntity.position = CesiumJs.Cartesian3.fromDegrees(
+          satellite.lng,
+          satellite.lat,
+          satellite.alt
+        );
+      } else {
+        // Add new satellite
+        const colorName = getSatelliteColor(satellite.name);
+        const color = (CesiumJs.Color as any)[colorName] || CesiumJs.Color.CYAN;
+
+        const entity = cesiumViewer.current?.entities.add({
+          name: satellite.name,
+          description: generateSatelliteDescription(satellite),
+          position: CesiumJs.Cartesian3.fromDegrees(
+            satellite.lng,
+            satellite.lat,
+            satellite.alt
+          ),
+          point: {
+            pixelSize: SATELLITE_CONFIG.VISUAL.POINT_SIZE,
+            color: color,
+            outlineColor: CesiumJs.Color.BLACK,
+            outlineWidth: 1,
+            // scaleByDistance: SATELLITE_CONFIG.PERFORMANCE.USE_DISTANCE_SCALING
+            //   ? new CesiumJs.NearFarScalar(1.5e6, 0.8, 1.5e8, 0.0)
+            //   : undefined,
+          },
+          label: {
+            text: satellite.name,
+            font: SATELLITE_CONFIG.VISUAL.LABEL.FONT,
+            fillColor: CesiumJs.Color.WHITE,
+            outlineColor: CesiumJs.Color.BLACK,
+            outlineWidth: 2,
+            style: CesiumJs.LabelStyle.FILL_AND_OUTLINE,
+            pixelOffset: new CesiumJs.Cartesian2(
+              0,
+              SATELLITE_CONFIG.VISUAL.LABEL.PIXEL_OFFSET_Y
+            ),
+            // scaleByDistance: SATELLITE_CONFIG.PERFORMANCE.USE_LOD_SCALING
+            //   ? new CesiumJs.NearFarScalar(1.5e6, 0.8, 1.5e8, 0.0)
+            //   : undefined,
+            show: new CesiumJs.ConstantProperty(
+              !SATELLITE_CONFIG.PERFORMANCE.HIDE_LABELS_BY_DEFAULT
+            ),
+          },
+        });
+
+        if (entity) {
+          satelliteEntities.current.set(satellite.name, entity);
+        }
+      }
+    });
+  }, [CesiumJs]);
 
   const initializeCesiumJs = React.useCallback(async () => {
     if (cesiumViewer.current !== null) {
@@ -95,65 +169,21 @@ export const CesiumComponent: React.FunctionComponent<{
         onLoadingStageChange?.("Rendering Satellites...");
         onProgressChange?.(80);
 
-        // Add satellites to the globe with better performance
+        // Add satellites to the globe using updateSatellites function
         console.log(`Adding ${satellites.length} satellites to Cesium`);
-
-        const totalSatellites = satellites.length;
-        satellites.forEach((satellite, index) => {
-          // Update progress for satellite rendering
-          if (index % Math.ceil(totalSatellites / 10) === 0) {
-            const satelliteProgress = 80 + (index / totalSatellites) * 15;
-            onProgressChange?.(satelliteProgress);
-          }
-
-          // Get color based on satellite type (constellation/purpose)
-          const colorName = getSatelliteColor(satellite.name);
-          const color =
-            (CesiumJs.Color as any)[colorName] || CesiumJs.Color.CYAN;
-
-          cesiumViewer.current?.entities.add({
-            name: satellite.name,
-            description: generateSatelliteDescription(satellite),
-            position: CesiumJs.Cartesian3.fromDegrees(
-              satellite.lng,
-              satellite.lat,
-              satellite.alt
-            ),
-            point: {
-              pixelSize: SATELLITE_CONFIG.VISUAL.POINT_SIZE,
-              color: color,
-              outlineColor: CesiumJs.Color.BLACK,
-              // outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
-              heightReference: CesiumJs.HeightReference.NONE,
-              scaleByDistance: SATELLITE_CONFIG.PERFORMANCE.USE_DISTANCE_SCALING
-                ? new CesiumJs.NearFarScalar(1.5e6, 3.0, 1.5e8, 0.3)
-                : undefined,
-            },
-            label: {
-              text: satellite.name,
-              font: SATELLITE_CONFIG.VISUAL.LABEL.FONT,
-              style: CesiumJs.LabelStyle.FILL_AND_OUTLINE,
-              // outlineWidth: SATELLITE_CONFIG.VISUAL.OUTLINE_WIDTH,
-              verticalOrigin: CesiumJs.VerticalOrigin.BOTTOM,
-              pixelOffset: new CesiumJs.Cartesian2(
-                0,
-                SATELLITE_CONFIG.VISUAL.LABEL.PIXEL_OFFSET_Y
-              ),
-              fillColor: CesiumJs.Color.WHITE,
-              outlineColor: CesiumJs.Color.BLACK,
-              scaleByDistance: SATELLITE_CONFIG.PERFORMANCE.USE_LOD_SCALING
-                ? new CesiumJs.NearFarScalar(1.5e6, 0.8, 1.5e8, 0.0)
-                : undefined,
-              show: new CesiumJs.ConstantProperty(
-                !SATELLITE_CONFIG.PERFORMANCE.HIDE_LABELS_BY_DEFAULT
-              ),
-            },
-          });
-        });
+        updateSatellites(satellites);
 
         // Add click handler to show satellite info
         cesiumViewer.current.selectedEntityChanged.addEventListener(() => {
           const selectedEntity = cesiumViewer.current?.selectedEntity;
+          
+          // Hide label for previously selected satellite
+          if (previouslySelectedEntity.current && previouslySelectedEntity.current.label) {
+            previouslySelectedEntity.current.label.show = new CesiumJs.ConstantProperty(
+              !SATELLITE_CONFIG.PERFORMANCE.HIDE_LABELS_BY_DEFAULT
+            );
+          }
+          
           if (selectedEntity && selectedEntity.name) {
             console.log(`Selected satellite: ${selectedEntity.name}`);
 
@@ -161,6 +191,10 @@ export const CesiumComponent: React.FunctionComponent<{
             if (selectedEntity.label) {
               selectedEntity.label.show = new CesiumJs.ConstantProperty(true);
             }
+            
+            previouslySelectedEntity.current = selectedEntity;
+          } else {
+            previouslySelectedEntity.current = null;
           }
         });
 
@@ -218,6 +252,13 @@ export const CesiumComponent: React.FunctionComponent<{
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [satellites, isLoaded, initializeCesiumJs]);
+
+  // Handle satellite updates when filtering
+  React.useEffect(() => {
+    if (isLoaded && cesiumViewer.current) {
+      updateSatellites(satellites);
+    }
+  }, [satellites, isLoaded, updateSatellites]);
 
   //NOTE: Examples of typing... See above on "import type"
   const entities: Entity[] = [];

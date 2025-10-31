@@ -6,6 +6,7 @@ import type { CesiumType } from "../types/cesium";
 import type { Position, SatellitePosition } from "../types/position";
 import AboutModal from "./AboutModal";
 import LoadingScreen from "./LoadingScreen";
+import SatelliteFilter from "./SatelliteFilter";
 
 const CesiumDynamicComponent = dynamic(() => import("./CesiumComponent"), {
   ssr: false,
@@ -21,6 +22,7 @@ export const CesiumWrapper: React.FunctionComponent<{
   );
   const [isGlobeReady, setIsGlobeReady] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
+  const [filteredSatellites, setFilteredSatellites] = React.useState<SatellitePosition[]>(satellites);
 
   React.useEffect(() => {
     if (CesiumJs !== null) return;
@@ -36,6 +38,15 @@ export const CesiumWrapper: React.FunctionComponent<{
       setProgress(50);
     });
   }, [CesiumJs]);
+
+  // Update filtered satellites when satellites prop changes
+  React.useEffect(() => {
+    setFilteredSatellites(satellites);
+  }, [satellites]);
+
+  const handleFilterChange = React.useCallback((filtered: SatellitePosition[]) => {
+    setFilteredSatellites(filtered);
+  }, []);
 
   const handleGlobeReady = React.useCallback(() => {
     setIsGlobeReady(true);
@@ -61,20 +72,26 @@ export const CesiumWrapper: React.FunctionComponent<{
             !CesiumJs
               ? "Loading 3D visualization engine..."
               : !isGlobeReady
-              ? `Rendering ${satellites.length.toLocaleString()} satellites...`
+              ? `Rendering ${filteredSatellites.length.toLocaleString()} satellites...`
               : undefined
           }
         />
       )}
       {CesiumJs && (
-        <CesiumDynamicComponent
-          CesiumJs={CesiumJs}
-          positions={positions}
-          satellites={satellites}
-          onGlobeReady={handleGlobeReady}
-          onLoadingStageChange={setLoadingStage}
-          onProgressChange={setProgress}
-        />
+        <>
+          <SatelliteFilter
+            satellites={satellites}
+            onFilterChange={handleFilterChange}
+          />
+          <CesiumDynamicComponent
+            CesiumJs={CesiumJs}
+            positions={positions}
+            satellites={filteredSatellites}
+            onGlobeReady={handleGlobeReady}
+            onLoadingStageChange={setLoadingStage}
+            onProgressChange={setProgress}
+          />
+        </>
       )}
       <AboutModal />
     </>
