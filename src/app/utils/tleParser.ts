@@ -111,7 +111,7 @@ export async function loadTLEData(): Promise<TLEData[]> {
     process.cwd(),
     "src",
     "app",
-    "tle_04_13_2024.txt"
+    "3le.txt"
   );
   return await parseTLEFile(tleFilePath);
 }
